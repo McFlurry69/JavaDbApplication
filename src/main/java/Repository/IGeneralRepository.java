@@ -1,10 +1,9 @@
 package Repository;
 
-import Models.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
-@Mapper
 public interface IGeneralRepository<T> {
-    public T returnEntityById(int id);
+    public T getEntityById(int id);
+    public boolean deleteEntityById(int id);
+    public T updateEntity (T entity);
+    public int createEntity (T entity);
 }
