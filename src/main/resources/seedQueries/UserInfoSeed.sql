@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS Users CASCADE;
     LIMIT 1
 ' LANGUAGE sql;*/
 
-CREATE TABLE Users (id bigserial PRIMARY KEY, Name varchar(80), age int4, PersonalInfoId bigint REFERENCES personalInfo (id));
+CREATE TABLE Users (id bigserial PRIMARY KEY, Name varchar(80), age int4, PersonalInfoId bigint REFERENCES personalInfo (id) ON DELETE SET NULL );
 
 INSERT INTO Users (name,age, personalinfoid)
 VALUES

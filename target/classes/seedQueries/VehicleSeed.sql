@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS vehicle CASCADE;
-CREATE TABLE vehicle (id bigserial PRIMARY KEY NOT NULL, carModel varchar(60), ManufactureDate date, UserId bigint REFERENCES users (id));
+CREATE TABLE vehicle (id bigserial PRIMARY KEY NOT NULL, carModel varchar(60), ManufactureDate date, UserId bigint REFERENCES users (id) ON DELETE SET NULL );
 
 /*CREATE FUNCTION getRandomUserID() RETURNS bigint AS '
     SELECT id

@@ -3,21 +3,15 @@ package Sturtup;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Helper {
 
-    public Optional<ConnectionSettings> getConnectionInfo() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            BufferedReader s = getFile("/settings/application.json").get();
-            return Optional.of(objectMapper.readValue(s.lines().collect(Collectors.joining()), ConnectionSettings.class));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    private Connection _connection;
 
     public Optional<BufferedReader> getFile(String path){
         try {
@@ -45,5 +39,20 @@ public class Helper {
         public String getPassword() {
             return password;
         }
+    }
+
+    private Optional<ConnectionSettings> getConnectionInfo() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return Optional.of(objectMapper.readValue(getFile("/settings/application.json").get().lines().collect(Collectors.joining()), ConnectionSettings.class));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Connection get_connection() throws SQLException {
+        Helper.ConnectionSettings _settings = getConnectionInfo().get();
+        return _connection = DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }
