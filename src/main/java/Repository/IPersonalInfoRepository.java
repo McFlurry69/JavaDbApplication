@@ -1,6 +1,10 @@
 package Repository;
 
 import Models.PersonalInfo;
+import Models.Vehicle;
 
-public interface IPersonalInfoRepository extends IGeneralRepository<PersonalInfo> {
+public abstract class IPersonalInfoRepository extends IGeneralRepositoryCommonImplementation<PersonalInfo> {
+    public IPersonalInfoRepository(Class<PersonalInfo> typeParameterClass) {
+        super(PersonalInfo.class);
+    }
 }

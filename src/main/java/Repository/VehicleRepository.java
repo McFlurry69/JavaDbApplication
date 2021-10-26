@@ -3,86 +3,62 @@ package Repository;
 import Models.Vehicle;
 import Sturtup.DependencyInjectionImitator;
 import Sturtup.Helper;
-import org.apache.commons.dbutils.AsyncQueryRunner;
+import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
-public class VehicleRepository implements IVehicleRepository {
-    private static AsyncQueryRunner _queryRunner = new AsyncQueryRunner(Executors.newCachedThreadPool());
+public class VehicleRepository extends IVehicleRepository {
+    private static QueryRunner _queryRunner = new QueryRunner();
     private Helper _helper;
+    private Helper.Tables _table = Helper.Tables.vehicle;
 
     public VehicleRepository() {
+        super(Vehicle.class);
         _helper = new DependencyInjectionImitator().get_helper();
     }
 
     @Override
-    public Future<Vehicle> getEntityById(int id) throws SQLException {
-        ResultSetHandler<Vehicle> resultHandler = new BeanHandler<Vehicle>(Vehicle.class);
-        Future<Vehicle> result;
-
-        Connection _connection = _helper.get_connection();
-        return _queryRunner.query(_connection, "SELECT * FROM vehicle WHERE id=?",
-                resultHandler, id);
+    public CompletableFuture<Vehicle> getEntityById(int id) throws SQLException {
+        return super.PerformGeneralSelectById(_table, id, _helper, _queryRunner);
     }
 
     @Override
-    public void deleteEntityById(int id) {
-        String deleteQuery = "DELETE FROM vehicle WHERE id=?";
-        try {
-            _queryRunner.update(_helper.get_connection(), deleteQuery, id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public CompletableFuture<Integer> deleteEntityById(int id) throws SQLException {
+        return super.PerformGeneralDeleteEntityById(_table, id, _helper, _queryRunner);
     }
 
     @Override
-    public void updateEntity(Vehicle entity) {
+    public CompletableFuture<Integer> updateEntity(Vehicle entity) throws SQLException {
         String updateQuery = "UPDATE vehicle SET carmodel=?, manufacturedate=?, userid=? where id = ?";
-        try {
-            _queryRunner.update(_helper.get_connection(), updateQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId(), entity.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        var task = _queryRunner.update(_helper.get_connection(), updateQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId(), entity.getId());
+
+        return CompletableFuture.supplyAsync(()->task);
     }
 
     @Override
-    public int createEntity(Vehicle entity) {
+    public CompletableFuture<Integer> createEntity(Vehicle entity) throws SQLException {
         String insertQuery = "INSERT INTO vehicle(carmodel, manufacturedate, userid) VALUES (?,?,?) RETURNING id";
-        Future<Integer> future;
-        try {
-            future = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId());
-            return future.get();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        var task = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId());
+
+        return CompletableFuture.supplyAsync(()->task);
     }
 
     @Override
-    public Future<List<Vehicle>> getEntities() throws SQLException {
-        ResultSetHandler<List<Vehicle>> resultHandler = new BeanListHandler<Vehicle>(Vehicle.class);
-
-        Connection _connection = _helper.get_connection();
-        return _queryRunner.query(_connection, "SELECT * FROM vehicle", resultHandler);
+    public CompletableFuture<List<Vehicle>> getEntities() throws SQLException {
+        return super.PerformGeneralGetEntities(_table, _helper, _queryRunner);
     }
 
     @Override
-    public Future<List<Vehicle>> getCarsByUserId(int userId) throws SQLException {
+    public CompletableFuture<List<Vehicle>> getCarsByUserId(int userId) throws SQLException {
         ResultSetHandler<List<Vehicle>> resultHandler = new BeanListHandler<Vehicle>(Vehicle.class);
 
-        Connection _connection = _helper.get_connection();
-        return _queryRunner.query(_connection, "SELECT * FROM vehicle WHERE userid=?", resultHandler, userId);
+        var task = _queryRunner.query(_helper.get_connection(), "SELECT * FROM vehicle WHERE userid=?", resultHandler, userId);
+
+        return CompletableFuture.supplyAsync(()->task);
     }
 }

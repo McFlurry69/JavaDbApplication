@@ -17,7 +17,7 @@ public class UserService {
         _userRepository = new DependencyInjectionImitator().get_UserRepository();
     }
 
-    public User getUser(int id){
+    public User getUser(Integer id){
         try {
             return (User) _userRepository.getFullUserInfoById(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
@@ -35,15 +35,15 @@ public class UserService {
         return null;
     }
 
-    public void DeleteUser(int id) {
+    public void DeleteUser(Integer id) throws SQLException {
         _userRepository.deleteEntityById(id);
     }
 
-    public void UpdateUser(User newUser){
+    public void UpdateUser(User newUser) throws SQLException {
         _userRepository.updateEntity(newUser);
     }
 
-    public void AddUser(User newUser){
+    public void AddUser(User newUser) throws SQLException {
         _userRepository.createEntity(newUser);
     }
 }

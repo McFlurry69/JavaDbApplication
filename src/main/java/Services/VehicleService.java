@@ -18,7 +18,7 @@ public class VehicleService {
         _vehicleRepository = new DependencyInjectionImitator().get_VehicleRepository();
     }
 
-    public Vehicle getVehicle(int id){
+    public Vehicle getVehicle(Integer id){
         try {
             return (Vehicle) _vehicleRepository.getEntityById(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
@@ -27,7 +27,7 @@ public class VehicleService {
         return null;
     }
 
-    public List<Vehicle> getVehiclesByUser(int id){
+    public List<Vehicle> getVehiclesByUser(Integer id){
         try {
             return (List<Vehicle>) _vehicleRepository.getCarsByUserId(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
@@ -45,15 +45,15 @@ public class VehicleService {
         return null;
     }
 
-    public void DeleteVehicle(int id) {
+    public void DeleteVehicle(Integer id) throws SQLException {
         _vehicleRepository.deleteEntityById(id);
     }
 
-    public void UpdateVehicle(Vehicle newVehicle){
+    public void UpdateVehicle(Vehicle newVehicle) throws SQLException {
         _vehicleRepository.updateEntity(newVehicle);
     }
 
-    public void AddVehicle(Vehicle newVehicle){
+    public void AddVehicle(Vehicle newVehicle) throws SQLException {
         _vehicleRepository.createEntity(newVehicle);
     } 
 }

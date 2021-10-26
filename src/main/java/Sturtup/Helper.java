@@ -25,6 +25,12 @@ public class Helper {
         return null;
     }
 
+    public static enum Tables {
+        personalinfo,
+        users,
+        vehicle
+    }
+
     public static class ConnectionSettings {
         private String db_Url;
         private String userName;

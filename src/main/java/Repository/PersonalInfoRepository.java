@@ -2,9 +2,10 @@ package Repository;
 
 import Models.PersonalInfo;
 
+import Models.User;
 import Sturtup.DependencyInjectionImitator;
 import Sturtup.Helper;
-import org.apache.commons.dbutils.AsyncQueryRunner;
+import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -14,75 +15,48 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class PersonalInfoRepository implements IPersonalInfoRepository {
-    private static AsyncQueryRunner _queryRunner = new AsyncQueryRunner(Executors.newCachedThreadPool());
+public class PersonalInfoRepository extends IPersonalInfoRepository {
+    private static QueryRunner _queryRunner = new QueryRunner();
     private Helper _helper;
+    private Helper.Tables _table = Helper.Tables.personalinfo;
 
-    public PersonalInfoRepository(){
+    public PersonalInfoRepository() {
+        super(PersonalInfo.class);
         _helper = new DependencyInjectionImitator().get_helper();
     }
 
     @Override
-    public Future<PersonalInfo> getEntityById(int id) throws SQLException {
-        ResultSetHandler<PersonalInfo> resultHandler = new BeanHandler<PersonalInfo>(PersonalInfo.class);
-        Future<PersonalInfo> result;
+    public CompletableFuture<PersonalInfo> getEntityById(int id) throws SQLException {
+        return super.PerformGeneralSelectById(_table, id, _helper, _queryRunner);
+    }
 
-            Connection _connection = _helper.get_connection();
-            result = _queryRunner.query(_connection, "SELECT * FROM personalinfo WHERE id=?",
-                    resultHandler, id);
-            return result;
+    @Override
+    public CompletableFuture<Integer> deleteEntityById(int id) throws SQLException {
+        return super.PerformGeneralDeleteEntityById(_table, id, _helper, _queryRunner);
+    }
+
+    @Override
+    public CompletableFuture<Integer> updateEntity(PersonalInfo entity) throws SQLException {
+        String updateQuery = "UPDATE personalInfo SET email=?, address=?, phoneNumber=? where id = ?";
+        var task = _queryRunner.update(_helper.get_connection(), updateQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber(), entity.getId());
+        return CompletableFuture.supplyAsync(() -> task);
+    }
+
+    @Override
+    public CompletableFuture<Integer> createEntity(PersonalInfo entity) throws SQLException {
+        String insertQuery = "INSERT INTO personalinfo(email, address, phonenumber)  VALUES (?,?,?) RETURNING id";
+        var result = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
+
+        return CompletableFuture.supplyAsync(() -> result);
 
     }
 
     @Override
-    public void deleteEntityById(int id) {
-        String deleteQuery = "DELETE FROM personalInfo WHERE id=?";
-        try {
-            _queryRunner.update(_helper.get_connection(), deleteQuery, id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void updateEntity(PersonalInfo entity) {
-        String updateQuery ="UPDATE personalInfo SET email=?, address=?, phoneNumber=? where id = ?";
-        try {
-            _queryRunner.update(_helper.get_connection(), updateQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber(), entity.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public int createEntity(PersonalInfo entity) {
-        String insertQuery ="INSERT INTO personalinfo(email, address, phonenumber)  VALUES (?,?,?) RETURNING id";
-        Future<Integer> future;
-        try {
-            future = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
-            return future.get();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    @Override
-    public Future<List<PersonalInfo>> getEntities() {
+    public CompletableFuture<List<PersonalInfo>> getEntities() throws SQLException {
         ResultSetHandler<List<PersonalInfo>> resultHandler = new BeanListHandler<PersonalInfo>(PersonalInfo.class);
-        Future<List<PersonalInfo>> result;
+        Connection _connection = _helper.get_connection();
 
-        try {
-            Connection _connection = _helper.get_connection();
-            result = _queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
-            return result;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+         var result = _queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
+         return CompletableFuture.supplyAsync(()->result);
     }
 }
