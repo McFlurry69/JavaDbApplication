@@ -13,6 +13,12 @@ public class Helper {
 
     private Connection _connection;
 
+    public class WrongFileContentException extends Exception{
+        public WrongFileContentException(String errorMessage){
+            super(errorMessage);
+        }
+    }
+
     public Optional<BufferedReader> getFile(String path){
         try {
             InputStream inputStream = this.getClass().getResourceAsStream(path);
@@ -47,10 +53,11 @@ public class Helper {
         }
     }
 
-    private Optional<ConnectionSettings> getConnectionInfo() {
+    private Optional<ConnectionSettings> getConnectionInfo(String path) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return Optional.of(objectMapper.readValue(getFile("/settings/application.json").get().lines().collect(Collectors.joining()), ConnectionSettings.class));
+            return Optional.of(objectMapper.readValue(getFile(path).get().lines().collect(Collectors.joining()), ConnectionSettings.class));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +65,7 @@ public class Helper {
     }
 
     public Connection get_connection() throws SQLException {
-        Helper.ConnectionSettings _settings = getConnectionInfo().get();
+        Helper.ConnectionSettings _settings = getConnectionInfo("/settings/application.json").get();
         return _connection = DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }

@@ -1,8 +1,7 @@
 package Services;
 
 import Models.Vehicle;
-import Repository.IVehicleRepository;
-import Repository.IVehicleRepository;
+import DAO.IVehicleRepository;
 import Sturtup.DependencyInjectionImitator;
 
 import java.sql.SQLException;
@@ -15,12 +14,12 @@ public class VehicleService {
     private final IVehicleRepository _vehicleRepository;
 
     public VehicleService(){
-        _vehicleRepository = new DependencyInjectionImitator().get_VehicleRepository();
+        _vehicleRepository = DependencyInjectionImitator.get_VehicleRepository();
     }
 
     public Vehicle getVehicle(Integer id){
         try {
-            return (Vehicle) _vehicleRepository.getEntityById(id).get(1, TimeUnit.SECONDS);
+            return _vehicleRepository.getEntityById(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -29,7 +28,7 @@ public class VehicleService {
 
     public List<Vehicle> getVehiclesByUser(Integer id){
         try {
-            return (List<Vehicle>) _vehicleRepository.getCarsByUserId(id).get(1, TimeUnit.SECONDS);
+            return _vehicleRepository.getCarsByUserId(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -38,7 +37,7 @@ public class VehicleService {
 
     public List<Vehicle> getVehicles(){
         try {
-            return (List<Vehicle>) _vehicleRepository.getEntities().get(1, TimeUnit.SECONDS);
+            return _vehicleRepository.getEntities().get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }

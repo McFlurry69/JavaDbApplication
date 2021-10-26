@@ -1,6 +1,6 @@
 package Sturtup;
 
-import Repository.*;
+import DAO.*;
 
 import java.util.function.Consumer;
 
@@ -15,15 +15,15 @@ public class DependencyInjectionImitator {
         return _helper;
     }
 
-    public UserRepository get_UserRepository() {
+    public static UserRepository get_UserRepository() {
         return new UserRepository();
     }
 
-    public VehicleRepository get_VehicleRepository() {
+    public static VehicleRepository get_VehicleRepository() {
         return new VehicleRepository();
     }
 
-    public PersonalInfoRepository get_PersonalInfoRepository() {
+    public static PersonalInfoRepository get_PersonalInfoRepository() {
         return new PersonalInfoRepository();
     }
 }

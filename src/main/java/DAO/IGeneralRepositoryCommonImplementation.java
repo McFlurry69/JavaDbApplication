@@ -1,8 +1,6 @@
-package Repository;
+package DAO;
 
-import Models.User;
 import Sturtup.Helper;
-import org.apache.commons.dbutils.AsyncQueryRunner;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -12,7 +10,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 
 public abstract class IGeneralRepositoryCommonImplementation<T> implements IGeneralRepository<T> {
@@ -26,8 +23,8 @@ public abstract class IGeneralRepositoryCommonImplementation<T> implements IGene
         String query = "SELECT * FROM $tableName WHERE id=?".replace("$tableName", tableName.toString());
         ResultSetHandler<T> resultHandler = new BeanHandler<T>(typeParameterClass);
         Connection _connection = helper.get_connection();
-        T result = queryRunner.query(_connection, query, resultHandler, id);
-        return CompletableFuture.supplyAsync(() -> result);
+        T task = queryRunner.query(_connection, query, resultHandler, id);
+        return CompletableFuture.supplyAsync(() -> task);
     }
 
     public CompletableFuture<Integer> PerformGeneralDeleteEntityById(Helper.Tables tableName, int id, Helper helper, QueryRunner queryRunner) throws SQLException {
@@ -40,8 +37,8 @@ public abstract class IGeneralRepositoryCommonImplementation<T> implements IGene
         ResultSetHandler<List<T>> resultHandler = new BeanListHandler<T>(typeParameterClass);
         Connection _connection = helper.get_connection();
         String query = "SELECT * FROM $tableName".replace("$tableName", tableName.toString());
-        List<T> result = queryRunner.query(_connection, query, resultHandler);
+        List<T> task = queryRunner.query(_connection, query, resultHandler);
 
-        return CompletableFuture.supplyAsync(() -> result);
+        return CompletableFuture.supplyAsync(() -> task);
     }
 }

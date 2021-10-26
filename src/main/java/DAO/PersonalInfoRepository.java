@@ -1,13 +1,11 @@
-package Repository;
+package DAO;
 
 import Models.PersonalInfo;
 
-import Models.User;
 import Sturtup.DependencyInjectionImitator;
 import Sturtup.Helper;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.sql.Connection;
@@ -45,9 +43,9 @@ public class PersonalInfoRepository extends IPersonalInfoRepository {
     @Override
     public CompletableFuture<Integer> createEntity(PersonalInfo entity) throws SQLException {
         String insertQuery = "INSERT INTO personalinfo(email, address, phonenumber)  VALUES (?,?,?) RETURNING id";
-        var result = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
+        var task = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
 
-        return CompletableFuture.supplyAsync(() -> result);
+        return CompletableFuture.supplyAsync(() -> task);
 
     }
 
@@ -56,7 +54,7 @@ public class PersonalInfoRepository extends IPersonalInfoRepository {
         ResultSetHandler<List<PersonalInfo>> resultHandler = new BeanListHandler<PersonalInfo>(PersonalInfo.class);
         Connection _connection = _helper.get_connection();
 
-         var result = _queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
-         return CompletableFuture.supplyAsync(()->result);
+         var task = _queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
+         return CompletableFuture.supplyAsync(()-> task);
     }
 }

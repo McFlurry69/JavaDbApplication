@@ -1,7 +1,7 @@
 package Services;
 
 import Models.User;
-import Repository.IUserRepository;
+import DAO.IUserRepository;
 import Sturtup.DependencyInjectionImitator;
 
 import java.sql.SQLException;
@@ -14,12 +14,12 @@ public class UserService {
     private final IUserRepository _userRepository;
 
     public UserService(){
-        _userRepository = new DependencyInjectionImitator().get_UserRepository();
+        _userRepository = DependencyInjectionImitator.get_UserRepository();
     }
 
     public User getUser(Integer id){
         try {
-            return (User) _userRepository.getFullUserInfoById(id).get(1, TimeUnit.SECONDS);
+            return _userRepository.getFullUserInfoById(id).get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -28,7 +28,7 @@ public class UserService {
 
     public List<User> getUsers(){
         try {
-            return (List<User>) _userRepository.getFullUsersInfo().get(1, TimeUnit.SECONDS);
+            return _userRepository.getFullUsersInfo().get(1, TimeUnit.SECONDS);
         } catch (SQLException | InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
