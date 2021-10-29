@@ -1,13 +1,13 @@
-package DAO;
+package dao;
 
-import Models.User;
+import model.User;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class IUserRepository extends IGeneralRepositoryCommonImplementation<User> {
-    public IUserRepository(Class<User> typeParameterClass) {
+public abstract class UserRepository extends GeneralRepositoryImplementation<User> {
+    public UserRepository(Class<User> typeParameterClass) {
         super(User.class);
     }
 

@@ -1,4 +1,4 @@
-package Models;
+package model;
 
 public class User {
     private Integer id;
@@ -39,11 +39,11 @@ public class User {
         PersonalInfoId = personalInfoId;
     }
 
-    public Models.PersonalInfo getPersonalInfo() {
+    public model.PersonalInfo getPersonalInfo() {
         return PersonalInfo;
     }
 
-    public void setPersonalInfo(Models.PersonalInfo personalInfo) {
+    public void setPersonalInfo(model.PersonalInfo personalInfo) {
         PersonalInfo = personalInfo;
     }
 }

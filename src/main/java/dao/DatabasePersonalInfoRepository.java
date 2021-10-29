@@ -1,9 +1,9 @@
-package DAO;
+package dao;
 
-import Models.PersonalInfo;
+import model.PersonalInfo;
 
-import Sturtup.DependencyInjectionImitator;
-import Sturtup.Helper;
+import sturtup.DependencyInjectionImitator;
+import sturtup.Helper;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -13,37 +13,37 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class PersonalInfoRepository extends IPersonalInfoRepository {
-    private static QueryRunner _queryRunner = new QueryRunner();
-    private Helper _helper;
-    private Helper.Tables _table = Helper.Tables.personalinfo;
+public class DatabasePersonalInfoRepository extends PersonalInfoRepository {
+    private static QueryRunner queryRunner = new QueryRunner();
+    private Helper helper;
+    private Helper.Tables table = Helper.Tables.personalinfo;
 
-    public PersonalInfoRepository() {
+    public DatabasePersonalInfoRepository() {
         super(PersonalInfo.class);
-        _helper = new DependencyInjectionImitator().get_helper();
+        helper = new DependencyInjectionImitator().getHelper();
     }
 
     @Override
     public CompletableFuture<PersonalInfo> getEntityById(int id) throws SQLException {
-        return super.PerformGeneralSelectById(_table, id, _helper, _queryRunner);
+        return super.PerformGeneralSelectById(table, id, helper, queryRunner);
     }
 
     @Override
     public CompletableFuture<Integer> deleteEntityById(int id) throws SQLException {
-        return super.PerformGeneralDeleteEntityById(_table, id, _helper, _queryRunner);
+        return super.PerformGeneralDeleteEntityById(table, id, helper, queryRunner);
     }
 
     @Override
     public CompletableFuture<Integer> updateEntity(PersonalInfo entity) throws SQLException {
         String updateQuery = "UPDATE personalInfo SET email=?, address=?, phoneNumber=? where id = ?";
-        var task = _queryRunner.update(_helper.get_connection(), updateQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber(), entity.getId());
+        var task = queryRunner.update(helper.getConnection(), updateQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber(), entity.getId());
         return CompletableFuture.supplyAsync(() -> task);
     }
 
     @Override
     public CompletableFuture<Integer> createEntity(PersonalInfo entity) throws SQLException {
         String insertQuery = "INSERT INTO personalinfo(email, address, phonenumber)  VALUES (?,?,?) RETURNING id";
-        var task = _queryRunner.update(_helper.get_connection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
+        var task = queryRunner.update(helper.getConnection(), insertQuery, entity.getEmail(), entity.getAddress(), entity.getPhoneNumber());
 
         return CompletableFuture.supplyAsync(() -> task);
 
@@ -52,9 +52,9 @@ public class PersonalInfoRepository extends IPersonalInfoRepository {
     @Override
     public CompletableFuture<List<PersonalInfo>> getEntities() throws SQLException {
         ResultSetHandler<List<PersonalInfo>> resultHandler = new BeanListHandler<PersonalInfo>(PersonalInfo.class);
-        Connection _connection = _helper.get_connection();
+        Connection _connection = helper.getConnection();
 
-         var task = _queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
+         var task = queryRunner.query(_connection, "SELECT * FROM personalinfo", resultHandler);
          return CompletableFuture.supplyAsync(()-> task);
     }
 }

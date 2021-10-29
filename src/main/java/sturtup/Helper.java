@@ -1,4 +1,4 @@
-package Sturtup;
+package sturtup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Helper {
-
-    private Connection _connection;
 
     public class WrongFileContentException extends Exception{
         public WrongFileContentException(String errorMessage){
@@ -64,8 +62,8 @@ public class Helper {
         return null;
     }
 
-    public Connection get_connection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         Helper.ConnectionSettings _settings = getConnectionInfo("/settings/application.json").get();
-        return _connection = DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
+        return DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }

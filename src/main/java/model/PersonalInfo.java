@@ -1,4 +1,4 @@
-package Models;
+package model;
 
 public class PersonalInfo {
     private Integer id;

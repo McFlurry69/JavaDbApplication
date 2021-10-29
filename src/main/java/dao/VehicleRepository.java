@@ -1,13 +1,13 @@
-package DAO;
+package dao;
 
-import Models.Vehicle;
+import model.Vehicle;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class IVehicleRepository extends IGeneralRepositoryCommonImplementation<Vehicle> {
-    public IVehicleRepository(Class<Vehicle> typeParameterClass) {
+public abstract class VehicleRepository extends GeneralRepositoryImplementation<Vehicle> {
+    public VehicleRepository(Class<Vehicle> typeParameterClass) {
         super(Vehicle.class);
     }
 
