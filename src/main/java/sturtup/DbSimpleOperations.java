@@ -1,6 +1,8 @@
 package sturtup;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.sql.*;
@@ -14,11 +16,14 @@ public class DbSimpleOperations {
     public DbSimpleOperations() {
         IOC = new DependencyInjectionImitator();
         helper = IOC.getHelper();
+
     }
+    static Logger log = LogManager.getLogger("JavaDbApplication");
+
 
     public boolean EnsureConnectionExists(){
         try (Connection _connection = helper.getConnection()) {
-            if(!_connection.isClosed()) IOC.getConsolePrint().accept("Connected to db!");
+            if(!_connection.isClosed()) log.info("dasd");
             _connection.close();
             if(_connection.isClosed()) IOC.getConsolePrint().accept("Closed!");
             return true;

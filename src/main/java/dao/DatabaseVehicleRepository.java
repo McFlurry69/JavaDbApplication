@@ -22,17 +22,17 @@ public class DatabaseVehicleRepository extends VehicleRepository {
     }
 
     @Override
-    public CompletableFuture<Vehicle> getEntityById(int id) throws SQLException {
-        return super.PerformGeneralSelectById(table, id, helper, queryRunner);
+    public CompletableFuture<Vehicle> getEntityByIdAsync(int id) throws SQLException {
+        return super.PerformGeneralSelectByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<Integer> deleteEntityById(int id) throws SQLException {
-        return super.PerformGeneralDeleteEntityById(table, id, helper, queryRunner);
+    public CompletableFuture<Integer> deleteEntityByIdAsync(int id) throws SQLException {
+        return super.PerformGeneralDeleteEntityByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<Integer> updateEntity(Vehicle entity) throws SQLException {
+    public CompletableFuture<Integer> updateEntityAsync(Vehicle entity) throws SQLException {
         String updateQuery = "UPDATE vehicle SET carmodel=?, manufacturedate=?, userid=? where id = ?";
         var task = queryRunner.update(helper.getConnection(), updateQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId(), entity.getId());
 
@@ -40,7 +40,7 @@ public class DatabaseVehicleRepository extends VehicleRepository {
     }
 
     @Override
-    public CompletableFuture<Integer> createEntity(Vehicle entity) throws SQLException {
+    public CompletableFuture<Integer> createEntityAsync(Vehicle entity) throws SQLException {
         String insertQuery = "INSERT INTO vehicle(carmodel, manufacturedate, userid) VALUES (?,?,?) RETURNING id";
         var task = queryRunner.update(helper.getConnection(), insertQuery, entity.getCarModel(), entity.getManufactureDate(), entity.getUserId());
 
@@ -48,12 +48,12 @@ public class DatabaseVehicleRepository extends VehicleRepository {
     }
 
     @Override
-    public CompletableFuture<List<Vehicle>> getEntities() throws SQLException {
-        return super.PerformGeneralGetEntities(table, helper, queryRunner);
+    public CompletableFuture<List<Vehicle>> getEntitiesAsync() throws SQLException {
+        return super.PerformGeneralGetEntitiesAsync(table, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<List<Vehicle>> getCarsByUserId(int userId) throws SQLException {
+    public CompletableFuture<List<Vehicle>> getCarsByUserIdAsync(int userId) throws SQLException {
         ResultSetHandler<List<Vehicle>> resultHandler = new BeanListHandler<Vehicle>(Vehicle.class);
 
         var task = queryRunner.query(helper.getConnection(), "SELECT * FROM vehicle WHERE userid=?", resultHandler, userId);

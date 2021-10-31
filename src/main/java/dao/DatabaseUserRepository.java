@@ -30,17 +30,17 @@ public class DatabaseUserRepository extends UserRepository {
     }
 
     @Override
-    public CompletableFuture<User> getEntityById(int id) throws SQLException {
-        return super.PerformGeneralSelectById(table, id, helper, queryRunner);
+    public CompletableFuture<User> getEntityByIdAsync(int id) throws SQLException {
+        return super.PerformGeneralSelectByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<Integer> deleteEntityById(int id) throws SQLException {
-        return super.PerformGeneralDeleteEntityById(table, id, helper, queryRunner);
+    public CompletableFuture<Integer> deleteEntityByIdAsync(int id) throws SQLException {
+        return super.PerformGeneralDeleteEntityByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<Integer> updateEntity(User entity) throws SQLException {
+    public CompletableFuture<Integer> updateEntityAsync(User entity) throws SQLException {
         String updateQuery = "UPDATE users SET name=?, age=?, personalinfoid=? where id = ?";
         var task = queryRunner.update(helper.getConnection(), updateQuery, entity.getName(), entity.getAge(), entity.getPersonalInfoId(), entity.getId());
 
@@ -48,7 +48,7 @@ public class DatabaseUserRepository extends UserRepository {
     }
 
     @Override
-    public CompletableFuture<Integer> createEntity(User entity) throws SQLException {
+    public CompletableFuture<Integer> createEntityAsync(User entity) throws SQLException {
         Integer personalInfoId = entity.getPersonalInfo() == null ? entity.getPersonalInfoId() : entity.getPersonalInfo().getId();
         String insertQuery = "INSERT INTO users(Name, age, PersonalInfoId) VALUES (?,?,?) RETURNING id";
 
@@ -57,12 +57,12 @@ public class DatabaseUserRepository extends UserRepository {
     }
 
     @Override
-    public CompletableFuture<List<User>> getEntities() throws SQLException {
-        return super.PerformGeneralGetEntities(table, helper, queryRunner);
+    public CompletableFuture<List<User>> getEntitiesAsync() throws SQLException {
+        return super.PerformGeneralGetEntitiesAsync(table, helper, queryRunner);
     }
 
     @Override
-    public CompletableFuture<User> getFullUserInfoById(int id) throws SQLException {
+    public CompletableFuture<User> getFullUserInfoByIdAsync(int id) throws SQLException {
         ResultSetHandler<User> resultHandler = new BeanHandler<User>(User.class, new UserFullInfoHandler());
         Connection _connection = helper.getConnection();
         var task = queryRunner.query(_connection, "SELECT * FROM users AS u JOIN personalinfo AS pers ON personalinfoid=pers.id WHERE u.id = ?",
@@ -72,7 +72,7 @@ public class DatabaseUserRepository extends UserRepository {
     }
 
     @Override
-    public CompletableFuture<List<User>> getFullUsersInfo() throws SQLException {
+    public CompletableFuture<List<User>> getFullUsersInfoAsync() throws SQLException {
         ResultSetHandler<List<User>> resultHandler = new BeanListHandler<User>(User.class, new UserFullInfoHandler());
         Connection _connection = helper.getConnection();
 

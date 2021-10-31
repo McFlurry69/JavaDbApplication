@@ -19,7 +19,7 @@ public abstract class GeneralRepositoryImplementation<T> implements GeneralRepos
         this.typeParameterClass = typeParameterClass;
     }
 
-    public CompletableFuture<T> PerformGeneralSelectById(Helper.Tables tableName, int id, Helper helper, QueryRunner queryRunner) throws SQLException {
+    public CompletableFuture<T> PerformGeneralSelectByIdAsync(Helper.Tables tableName, int id, Helper helper, QueryRunner queryRunner) throws SQLException {
         String query = "SELECT * FROM $tableName WHERE id=?".replace("$tableName", tableName.toString());
         ResultSetHandler<T> resultHandler = new BeanHandler<T>(typeParameterClass);
         Connection _connection = helper.getConnection();
@@ -27,13 +27,13 @@ public abstract class GeneralRepositoryImplementation<T> implements GeneralRepos
         return CompletableFuture.supplyAsync(() -> task);
     }
 
-    public CompletableFuture<Integer> PerformGeneralDeleteEntityById(Helper.Tables tableName, int id, Helper helper, QueryRunner queryRunner) throws SQLException {
-        String deleteQuery = "DELETE FROM ? WHERE id=?";
-        Integer task = queryRunner.update(helper.getConnection(), deleteQuery, tableName.toString(), id);
+    public CompletableFuture<Integer> PerformGeneralDeleteEntityByIdAsync(Helper.Tables tableName, int id, Helper helper, QueryRunner queryRunner) throws SQLException {
+        String deleteQuery = "DELETE FROM $tableName WHERE id=?".replace("$tableName", tableName.toString());
+        Integer task = queryRunner.update(helper.getConnection(), deleteQuery, id);
         return CompletableFuture.supplyAsync(() -> task);
     }
 
-    public CompletableFuture<List<T>> PerformGeneralGetEntities(Helper.Tables tableName, Helper helper, QueryRunner queryRunner) throws SQLException {
+    public CompletableFuture<List<T>> PerformGeneralGetEntitiesAsync(Helper.Tables tableName, Helper helper, QueryRunner queryRunner) throws SQLException {
         ResultSetHandler<List<T>> resultHandler = new BeanListHandler<T>(typeParameterClass);
         Connection _connection = helper.getConnection();
         String query = "SELECT * FROM $tableName".replace("$tableName", tableName.toString());

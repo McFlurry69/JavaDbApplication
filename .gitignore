@@ -1,7 +1,7 @@
 .idea/
 *.iml
 *.iws
-src/main/resources/settings/
+src/main/resources/settings/application.json
 *.class
 
 # Log file

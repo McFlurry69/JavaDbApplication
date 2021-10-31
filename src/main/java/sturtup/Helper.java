@@ -1,8 +1,11 @@
 package sturtup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.*;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,7 +25,7 @@ public class Helper {
             InputStream inputStream = this.getClass().getResourceAsStream(path);
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            return Optional.of(bufferedReader);
+            return Optional.ofNullable(bufferedReader);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,6 +63,16 @@ public class Helper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void getLog4JConfigFile() {
+        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        this.getClass().getResourceAsStream("/settings/log4j.properties");
+        URL resource = this.getClass().getResource("/settings/log4j.properties");
+        File file = new File(resource.toString());
+        System.out.println(file);
+            context.setConfigLocation(file.toURI());
+
     }
 
     public Connection getConnection() throws SQLException {

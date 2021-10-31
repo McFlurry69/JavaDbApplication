@@ -11,5 +11,5 @@ public abstract class VehicleRepository extends GeneralRepositoryImplementation<
         super(Vehicle.class);
     }
 
-    public abstract CompletableFuture<List<Vehicle>> getCarsByUserId(int userId) throws SQLException;
+    public abstract CompletableFuture<List<Vehicle>> getCarsByUserIdAsync(int userId) throws SQLException;
 }

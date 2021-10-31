@@ -11,6 +11,6 @@ public abstract class UserRepository extends GeneralRepositoryImplementation<Use
         super(User.class);
     }
 
-    public abstract CompletableFuture<User> getFullUserInfoById(int id) throws SQLException;
-    public abstract CompletableFuture<List<User>> getFullUsersInfo() throws SQLException;
+    public abstract CompletableFuture<User> getFullUserInfoByIdAsync(int id) throws SQLException;
+    public abstract CompletableFuture<List<User>> getFullUsersInfoAsync() throws SQLException;
 }
