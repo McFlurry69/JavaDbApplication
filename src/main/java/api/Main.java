@@ -14,16 +14,6 @@ import java.util.concurrent.CompletableFuture;
 public class Main {
     public static void main(String[] args)
     {
-        DatabasePersonalInfoRepository s = new DatabasePersonalInfoRepository();
-        try {
-            CompletableFuture<List<PersonalInfo>> entitiesAsync = s.getEntitiesAsync();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            CompletableFuture<List<PersonalInfo>> entitiesAsync = s.getEntitiesAsync();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 }

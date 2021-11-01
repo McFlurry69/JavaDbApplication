@@ -2,6 +2,7 @@
 *.iml
 *.iws
 *.class
+dbSettings.json
 
 # Log file
 *.log
