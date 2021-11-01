@@ -12,23 +12,23 @@ import java.util.List;
 public class DbSimpleOperations {
     private final DependencyInjectionImitator IOC;
     private final Helper helper;
+    private final Logger logger;
+
 
     public DbSimpleOperations() {
         IOC = new DependencyInjectionImitator();
         helper = IOC.getHelper();
-
+        logger = DependencyInjectionImitator.get_Logger();
     }
-    static Logger log = LogManager.getLogger("JavaDbApplication");
-
 
     public boolean EnsureConnectionExists(){
         try (Connection _connection = helper.getConnection()) {
-            if(!_connection.isClosed()) log.info("dasd");
+            if(!_connection.isClosed()) logger.info("Db connection successfully opened!");
             _connection.close();
-            if(_connection.isClosed()) IOC.getConsolePrint().accept("Closed!");
+            if(_connection.isClosed()) logger.info("Db connection closed!");
             return true;
         } catch ( SQLException e) {
-            IOC.getConsolePrint().accept("Connection failed ");
+            logger.info("Db connection failed! "+ e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -44,9 +44,11 @@ public class DbSimpleOperations {
             ScriptRunner _script = new ScriptRunner(_connection);
             for(BufferedReader reader: readers)
                 _script.runScript(reader);
+            logger.info("Data was seeded successfully");
             return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            logger.info("Data was not seeded "+ e.getMessage());
+            e.printStackTrace();
         }
         return false;
     }

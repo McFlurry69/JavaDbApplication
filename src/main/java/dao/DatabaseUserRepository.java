@@ -2,6 +2,7 @@ package dao;
 
 import model.PersonalInfo;
 import model.User;
+import org.apache.logging.log4j.Logger;
 import sturtup.DependencyInjectionImitator;
 import sturtup.Helper;
 import org.apache.commons.dbutils.BasicRowProcessor;
@@ -22,25 +23,30 @@ public class DatabaseUserRepository extends UserRepository {
     private DependencyInjectionImitator IOC;
     private Helper helper;
     private Helper.Tables table = Helper.Tables.users;
+    private final Logger logger;
 
     public DatabaseUserRepository() {
         super(User.class);
         IOC = new DependencyInjectionImitator();
         helper = IOC.getHelper();
+        logger = DependencyInjectionImitator.get_Logger();
     }
 
     @Override
     public CompletableFuture<User> getEntityByIdAsync(int id) throws SQLException {
+        logger.info("getEntityByIdAsync from dao layer");
         return super.PerformGeneralSelectByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
     public CompletableFuture<Integer> deleteEntityByIdAsync(int id) throws SQLException {
+        logger.info("deleteEntityByIdAsync from dao layer");
         return super.PerformGeneralDeleteEntityByIdAsync(table, id, helper, queryRunner);
     }
 
     @Override
     public CompletableFuture<Integer> updateEntityAsync(User entity) throws SQLException {
+        logger.info("updateEntityAsync from dao layer");
         String updateQuery = "UPDATE users SET name=?, age=?, personalinfoid=? where id = ?";
         var task = queryRunner.update(helper.getConnection(), updateQuery, entity.getName(), entity.getAge(), entity.getPersonalInfoId(), entity.getId());
 
@@ -49,6 +55,7 @@ public class DatabaseUserRepository extends UserRepository {
 
     @Override
     public CompletableFuture<Integer> createEntityAsync(User entity) throws SQLException {
+        logger.info("createEntityAsync from dao layer");
         Integer personalInfoId = entity.getPersonalInfo() == null ? entity.getPersonalInfoId() : entity.getPersonalInfo().getId();
         String insertQuery = "INSERT INTO users(Name, age, PersonalInfoId) VALUES (?,?,?) RETURNING id";
 
@@ -58,11 +65,13 @@ public class DatabaseUserRepository extends UserRepository {
 
     @Override
     public CompletableFuture<List<User>> getEntitiesAsync() throws SQLException {
+        logger.info("getEntitiesAsync from dao layer");
         return super.PerformGeneralGetEntitiesAsync(table, helper, queryRunner);
     }
 
     @Override
     public CompletableFuture<User> getFullUserInfoByIdAsync(int id) throws SQLException {
+        logger.info("getFullUserInfoByIdAsync from dao layer");
         ResultSetHandler<User> resultHandler = new BeanHandler<User>(User.class, new UserFullInfoHandler());
         Connection _connection = helper.getConnection();
         var task = queryRunner.query(_connection, "SELECT * FROM users AS u JOIN personalinfo AS pers ON personalinfoid=pers.id WHERE u.id = ?",
@@ -73,6 +82,7 @@ public class DatabaseUserRepository extends UserRepository {
 
     @Override
     public CompletableFuture<List<User>> getFullUsersInfoAsync() throws SQLException {
+        logger.info("getFullUsersInfoAsync from dao layer");
         ResultSetHandler<List<User>> resultHandler = new BeanListHandler<User>(User.class, new UserFullInfoHandler());
         Connection _connection = helper.getConnection();
 

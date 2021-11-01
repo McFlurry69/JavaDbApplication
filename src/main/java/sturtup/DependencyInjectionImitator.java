@@ -3,6 +3,7 @@ package sturtup;
 import dao.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 
 import java.util.function.Consumer;
 
@@ -25,7 +26,7 @@ public class DependencyInjectionImitator {
         return new DatabaseVehicleRepository();
     }
 
-    public static Logger get_Logger() { return LogManager.getLogger("JavaDbApplication"); }
+    public static Logger get_Logger() { return LogManager.getLogger(StringFormatterMessageFactory.INSTANCE); }
 
     public static DatabasePersonalInfoRepository get_PersonalInfoRepository() {
         return new DatabasePersonalInfoRepository();

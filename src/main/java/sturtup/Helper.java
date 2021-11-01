@@ -1,11 +1,9 @@
 package sturtup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,19 +12,19 @@ import java.util.stream.Collectors;
 
 public class Helper {
 
-    public class WrongFileContentException extends Exception{
-        public WrongFileContentException(String errorMessage){
-            super(errorMessage);
-        }
-    }
+    private final Logger logger = DependencyInjectionImitator.get_Logger();
+    private ConnectionSettings connectionSettings;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public Optional<BufferedReader> getFile(String path){
         try {
+            logger.info("Creating filestream");
             InputStream inputStream = this.getClass().getResourceAsStream(path);
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            return Optional.ofNullable(bufferedReader);
+            return Optional.of(bufferedReader);
         } catch (Exception e) {
+            logger.error("Did not get file "+ e.toString());
             e.printStackTrace();
         }
         return null;
@@ -55,28 +53,21 @@ public class Helper {
     }
 
     private Optional<ConnectionSettings> getConnectionInfo(String path) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        logger.info("Getting connection info from file");
         try {
-            return Optional.of(objectMapper.readValue(getFile(path).get().lines().collect(Collectors.joining()), ConnectionSettings.class));
-
+            if (connectionSettings == null) {
+                connectionSettings = objectMapper.readValue(getFile(path).get().lines().collect(Collectors.joining()), ConnectionSettings.class);
+            }
+            return Optional.of(connectionSettings);
         } catch (IOException e) {
+            logger.error("Getting connection gone wrong!" + e.toString());
             e.printStackTrace();
         }
         return null;
     }
 
-    public void getLog4JConfigFile() {
-        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-        this.getClass().getResourceAsStream("/settings/log4j.properties");
-        URL resource = this.getClass().getResource("/settings/log4j.properties");
-        File file = new File(resource.toString());
-        System.out.println(file);
-            context.setConfigLocation(file.toURI());
-
-    }
-
     public Connection getConnection() throws SQLException {
-        Helper.ConnectionSettings _settings = getConnectionInfo("/settings/application.json").get();
+        Helper.ConnectionSettings _settings = getConnectionInfo("/application.json").get();
         return DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }

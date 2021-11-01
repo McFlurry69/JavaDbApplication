@@ -1,0 +1,6 @@
+{
+    "db_Url": "jdbc:postgresql://localhost:5432/JavaDTest",
+    "userName": "postgres",
+    "password": "73542445"
+}
+
