@@ -67,7 +67,7 @@ public class Helper {
     }
 
     public Connection getConnection() throws SQLException {
-        Helper.ConnectionSettings _settings = getConnectionInfo("/application.json").get();
+        Helper.ConnectionSettings _settings = getConnectionInfo("/dbSettings.json").get();
         return DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }
