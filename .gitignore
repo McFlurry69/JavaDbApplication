@@ -3,6 +3,7 @@
 *.iws
 *.class
 dbSettings.json
+target/classes/dbSettings.json
 
 # Log file
 *.log

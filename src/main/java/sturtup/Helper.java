@@ -30,7 +30,7 @@ public class Helper {
         return null;
     }
 
-    public static enum Tables {
+    public enum Tables {
         personalinfo,
         users,
         vehicle
@@ -68,6 +68,7 @@ public class Helper {
 
     public Connection getConnection() throws SQLException {
         Helper.ConnectionSettings _settings = getConnectionInfo("/dbSettings.json").get();
+        // !c.63qEdsp$mzqi
         return DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }
