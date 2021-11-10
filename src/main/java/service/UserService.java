@@ -24,8 +24,7 @@ public class UserService {
             logger.info("getUser from service layer");
             return userRepository.getFullUserInfoByIdAsync(id).get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            logger.info("Error occurred while getUser"+e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while getUser",e);
         }
         return null;
     }
@@ -35,8 +34,7 @@ public class UserService {
             logger.info("getUsers from service layer");
             return userRepository.getFullUsersInfoAsync().get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            logger.info("Error occurred while getUsers"+e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while getUsers",e);
         }
         return null;
     }
@@ -46,8 +44,7 @@ public class UserService {
             logger.info("deleteUser from service layer");
             return userRepository.deleteEntityByIdAsync(id).get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            logger.info("Error occurred while deleteUser"+e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while deleteUser",e);
         }
         return null;
     }
@@ -57,8 +54,7 @@ public class UserService {
             logger.info("updateUser from service layer");
             return userRepository.updateEntityAsync(newUser).get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            logger.info("Error occurred while updateUser"+e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while updateUser",e);
         }
         return null;
     }
@@ -68,8 +64,7 @@ public class UserService {
             logger.info("addUser from service layer");
             return userRepository.createEntityAsync(newUser).get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            logger.info("Error occurred while addUser"+e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while addUser",e);
         }
         return null;
     }
