@@ -1,20 +1,16 @@
-package service;
+package infrastructure;
 
-import dao.DatabaseUserRepository;
-import dao.UserRepository;
-import model.PersonalInfo;
-import model.User;
-import org.junit.jupiter.api.BeforeEach;
+import application.UserRepository;
+import domain.PersonalInfo;
+import domain.User;
+import infrastructure.Services.PSQL.PSQLUserService;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import sturtup.DependencyInjectionImitator;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -24,15 +20,16 @@ import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserServiceTest {
+class PSQLUserServiceTest {/*
     private static Random random = new Random();
 
-    @BeforeEach
+    @Before
     void init_mocks() {
         MockitoAnnotations.initMocks(this);
     }
 
-    @InjectMocks UserService us;
+    @InjectMocks
+    PSQLUserService us;
     @Mock UserRepository userRepository;
 
     @Test
@@ -49,6 +46,8 @@ class UserServiceTest {
 
         assertEquals(null, us.getUser(anyInt()));
     }
+
+    //us.getUser(1); verify(userRepository, times(1)).getFullUserInfoByIdAsync(1);
 
     @Test
     void getUsers_ReturnsListOfUsers() throws SQLException {
@@ -94,5 +93,5 @@ class UserServiceTest {
         newUser.setPersonalInfo(pi);
 
         return newUser;
-    }
+    }*/
 }

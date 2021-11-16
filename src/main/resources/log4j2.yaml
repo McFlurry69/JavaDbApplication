@@ -42,4 +42,3 @@ Configutation:
         AppenderRef:
           - ref: RollingFile_Appender
             level: error
-  m

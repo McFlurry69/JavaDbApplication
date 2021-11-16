@@ -1,9 +1,10 @@
 .idea/
 *.iml
 *.iws
-*.class
+target/
 dbSettings.json
 target/classes/dbSettings.json
+desktop.ini
 
 # Log file
 *.log

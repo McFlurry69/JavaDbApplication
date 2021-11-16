@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 public class User {
     private Integer id;
@@ -39,11 +39,11 @@ public class User {
         PersonalInfoId = personalInfoId;
     }
 
-    public model.PersonalInfo getPersonalInfo() {
+    public domain.PersonalInfo getPersonalInfo() {
         return PersonalInfo;
     }
 
-    public void setPersonalInfo(model.PersonalInfo personalInfo) {
+    public void setPersonalInfo(domain.PersonalInfo personalInfo) {
         PersonalInfo = personalInfo;
     }
 }

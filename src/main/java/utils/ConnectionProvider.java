@@ -1,6 +1,7 @@
-package sturtup;
+package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -10,11 +11,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Helper {
+public class ConnectionProvider {
 
-    private final Logger logger = DependencyInjectionImitator.get_Logger();
+    private final Logger logger = LogManager.getLogger(this.getClass());
     private ConnectionSettings connectionSettings;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Optional<BufferedReader> getFile(String path){
         try {
@@ -24,17 +25,13 @@ public class Helper {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             return Optional.of(bufferedReader);
         } catch (Exception e) {
-            logger.error("Did not get file "+ e.toString());
+            logger.error("Did not get file ", e);
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
-    public enum Tables {
-        personalinfo,
-        users,
-        vehicle
-    }
+
 
     public static class ConnectionSettings {
         private String db_Url;
@@ -60,15 +57,14 @@ public class Helper {
             }
             return Optional.of(connectionSettings);
         } catch (IOException e) {
-            logger.error("Getting connection gone wrong!" + e.toString());
+            logger.error("Getting connection gone wrong!", e);
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     public Connection getConnection() throws SQLException {
-        Helper.ConnectionSettings _settings = getConnectionInfo("/dbSettings.json").get();
-        // !c.63qEdsp$mzqi
+        ConnectionProvider.ConnectionSettings _settings = getConnectionInfo("/dbSettings.json").get();
         return DriverManager.getConnection(_settings.getDb_Url(), _settings.getUserName(), _settings.getPassword());
     }
 }

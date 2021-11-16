@@ -1,4 +1,4 @@
-package sturtup;
+package utils;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.logging.log4j.LogManager;
@@ -10,17 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DbSimpleOperations {
-    private final DependencyInjectionImitator IOC;
-    private final Helper helper;
-    private final Logger logger;
+    private final DependencyInjectionImitator IOC = new DependencyInjectionImitator();
+    private final ConnectionProvider helper = IOC.getHelper();
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
-
-    public DbSimpleOperations() {
-        IOC = new DependencyInjectionImitator();
-        helper = IOC.getHelper();
-        logger = DependencyInjectionImitator.get_Logger();
-    }
-
+    @Deprecated
     public boolean EnsureConnectionExists(){
         try (Connection _connection = helper.getConnection()) {
             if(!_connection.isClosed()) logger.info("Db connection successfully opened!");
@@ -28,8 +22,7 @@ public class DbSimpleOperations {
             if(_connection.isClosed()) logger.info("Db connection closed!");
             return true;
         } catch ( SQLException e) {
-            logger.info("Db connection failed! "+ e.getMessage());
-            e.printStackTrace();
+            logger.info("Db connection failed! ", e);
         }
         return false;
     }
@@ -47,8 +40,7 @@ public class DbSimpleOperations {
             logger.info("Data was seeded successfully");
             return true;
         } catch (SQLException e) {
-            logger.info("Data was not seeded "+ e.getMessage());
-            e.printStackTrace();
+            logger.info("Data was not seeded ", e);
         }
         return false;
     }
